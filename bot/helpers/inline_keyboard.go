@@ -1,8 +1,6 @@
 package helpers
 
 import (
-	"math"
-
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
@@ -19,7 +17,7 @@ func GetInlineKeyboard(
 	restBtnsLen := itemsLen % btnsInRow
 	restRowsLen := 0
 	if restBtnsLen > 0 {
-		restRowsLen = int(math.Max(float64(btnsInRow-restBtnsLen), 0))
+		restRowsLen = 1
 	}
 	keyboardRows := make([][]tgbotapi.InlineKeyboardButton, rowsLen+restRowsLen)
 
