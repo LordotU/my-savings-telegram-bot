@@ -4,7 +4,7 @@ import (
 	"github.com/LordotU/my-savings-telegram-bot/repository"
 	"github.com/LordotU/my-savings-telegram-bot/types"
 
-	client "github.com/LordotU/my-savings-telegram-bot/clients/fixerio"
+	client "github.com/LordotU/go-fixerio"
 	ratesTypes "github.com/LordotU/my-savings-telegram-bot/rates/types"
 )
 
@@ -14,7 +14,7 @@ type FixerIO struct {
 }
 
 func GetNewFixerIO(APIKey string, Base string, Secure bool, repository *repository.Repository) (*FixerIO, error) {
-	f, err := client.GetNew(APIKey, Base, Secure)
+	f, err := client.New(APIKey, Base, Secure)
 	if err != nil {
 		return nil, err
 	}

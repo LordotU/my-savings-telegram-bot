@@ -3,13 +3,12 @@ module github.com/LordotU/my-savings-telegram-bot
 go 1.12
 
 require (
+	github.com/LordotU/go-fixerio v1.0.0
 	github.com/caarlos0/env/v6 v6.0.0
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/go-telegram-bot-api/telegram-bot-api v4.6.4+incompatible
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/google/go-cmp v0.3.1 // indirect
-	github.com/looplab/fsm v0.1.0
-	github.com/pkg/errors v0.8.1 // indirect
 	github.com/technoweenie/multipartstreamer v1.0.1 // indirect
 	github.com/tidwall/pretty v1.0.0 // indirect
 	github.com/xdg/scram v0.0.0-20180814205039-7eeb5667e42c // indirect
