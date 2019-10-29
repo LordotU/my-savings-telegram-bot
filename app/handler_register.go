@@ -14,7 +14,7 @@ func (app *Application) botHandlerRegister(
 	b *bot.Bot,
 	params ...interface{},
 ) tgbotapi.Chattable {
-	_, err := app.Repository.CreateUser(*u.Message.From, app.Config.FixerIOBaseCurrency)
+	_, err := app.Repository.CreateUser(*u.Message.From, app.RatesProvider.GetBaseCurrency())
 	if err != nil {
 		app.Logger.Error("Create user error", zap.Error(err))
 		return nil
@@ -22,7 +22,7 @@ func (app *Application) botHandlerRegister(
 
 	msg, err := botHelpers.GetMsgFromMdTemplate(
 		"register.md",
-		struct{ BaseCurrency string }{app.Config.FixerIOBaseCurrency},
+		struct{ BaseCurrency string }{app.RatesProvider.GetBaseCurrency()},
 		u.Message.Chat.ID,
 	)
 	if err != nil {

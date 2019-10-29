@@ -15,10 +15,7 @@ func (app *Application) botCallbackSetBaseCurrency(
 	b *bot.Bot,
 	params ...interface{},
 ) tgbotapi.Chattable {
-	currency := app.Config.FixerIOBaseCurrency
-	if params[0] != nil && params[0].(string) != "" {
-		currency = params[0].(string)
-	}
+	currency := params[0].(string)
 
 	data := make(map[string]interface{})
 	data["base"] = strings.ToUpper(currency)

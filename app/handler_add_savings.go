@@ -33,7 +33,7 @@ func (app *Application) botHandlerAddSavings(
 	}
 
 	currency := strings.ToUpper(commandArgsSplitted[1])
-	if !strings.Contains(app.Config.FixerIOSymbols, currency) {
+	if !strings.Contains(strings.Join(app.RatesProvider.GetSymbols(), ","), currency) {
 		return tgbotapi.NewMessage(u.Message.Chat.ID, "Please, use command /get_currencies to get list of available currencies")
 	}
 

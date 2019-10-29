@@ -6,7 +6,6 @@ import (
 	"math"
 	"os"
 	"os/signal"
-	"strings"
 	"sync"
 	"syscall"
 	"time"
@@ -171,17 +170,15 @@ func (app *Application) initBot() {
 	var err error
 	app.Bot, err = bot.GetNew(app.Config.TelegramAPIToken, app.Config.DebugTelegramAPI, app.Logger)
 	if err != nil {
-		app.Logger.Error("Cannot init TelegramBotAPI", zap.Error(err))
+		app.Logger.Panic("Cannot init TelegramBotAPI", zap.Error(err))
 	}
 }
 
 func (app *Application) initRatesProvider() {
 	var err error
-	if app.RatesProvider, err = rates.GetNew(
+	if app.RatesProvider, err = rates.New(
 		app.Config.RatesProvider,
-		app.Config.FixerIOAPIKey,
-		app.Config.FixerIOBaseCurrency,
-		app.Config.FixerIOSecure,
+		app.Config.RatesProviderOptions,
 		app.Repository,
 	); err != nil {
 		app.Logger.Panic("Cannot init RatesProvider", zap.Error(err))
@@ -218,11 +215,11 @@ func (app *Application) runRatesUpdates() {
 				if ok {
 					app.Logger.Info("Process rates update")
 
-					if err := app.RatesProvider.UpdateRates(strings.Split(app.Config.FixerIOSymbols, ",")); err != nil {
+					if err := app.RatesProvider.UpdateRates(); err != nil {
 						app.Logger.Error("Process rates error", zap.Error(err))
 					}
 
-					timer = app.getTimerForRatesUpdates(app.Config.ExchangeRatesGettingTimer)
+					timer = app.getTimerForRatesUpdates(app.Config.RatesProviderUpdatePeriod)
 				} else {
 					app.Error <- errors.New("runRatesUpdates timer stops")
 					return

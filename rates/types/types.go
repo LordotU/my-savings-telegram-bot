@@ -7,5 +7,7 @@ type CurrencyExchangeRate struct {
 }
 
 type Provider interface {
-	UpdateRates(params ...interface{}) error
+	GetBaseCurrency() string
+	GetSymbols() []string
+	UpdateRates() error
 }

@@ -1,6 +1,8 @@
 package providers
 
 import (
+	"encoding/json"
+
 	"github.com/LordotU/my-savings-telegram-bot/repository"
 	"github.com/LordotU/my-savings-telegram-bot/types"
 
@@ -8,25 +10,40 @@ import (
 	ratesTypes "github.com/LordotU/my-savings-telegram-bot/rates/types"
 )
 
+type FixerIOOptions struct {
+	APIKey  string   `json:"FixerIOAPIKey"`
+	Base    string   `json:"FixerIOBaseCurrency"`
+	Secure  bool     `json:"FixerIOSecure"`
+	Symbols []string `json:"FixerIOSymbols"`
+}
+
 type FixerIO struct {
 	Client     *client.FixerIO
+	Options    *FixerIOOptions
 	Repository *repository.Repository
 }
 
-func GetNewFixerIO(APIKey string, Base string, Secure bool, repository *repository.Repository) (*FixerIO, error) {
-	f, err := client.New(APIKey, Base, Secure)
+func NewFixerIO(o string, repository *repository.Repository) (*FixerIO, error) {
+	options := &FixerIOOptions{}
+	err := json.Unmarshal([]byte(o), options)
+	if err != nil {
+		return nil, err
+	}
+
+	client, err := client.New(options.APIKey, options.Base, options.Secure)
 	if err != nil {
 		return nil, err
 	}
 
 	return &FixerIO{
-		f,
-		repository,
+		Client:     client,
+		Options:    options,
+		Repository: repository,
 	}, nil
 }
 
-func (f *FixerIO) UpdateRates(params ...interface{}) error {
-	response, err := f.Client.GetLatest(params[0].([]string))
+func (f *FixerIO) UpdateRates() error {
+	response, err := f.Client.GetLatest(f.Options.Symbols)
 	if err != nil {
 		return err
 	}
@@ -41,4 +58,12 @@ func (f *FixerIO) UpdateRates(params ...interface{}) error {
 	}
 
 	return f.Repository.UpdateRates(result)
+}
+
+func (f *FixerIO) GetBaseCurrency() string {
+	return f.Options.Base
+}
+
+func (f *FixerIO) GetSymbols() []string {
+	return f.Options.Symbols
 }

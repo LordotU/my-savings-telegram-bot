@@ -32,17 +32,20 @@ And don't forget about **MongoDB** which is used for storing data.
 
 ## Configuring
 
-| Option                       |                                 Default |
-|------------------------------|----------------------------------------:|
-| DEBUG                        |                                   false |
-| DEBUG_TELEGRAM_API           |                                   false |
-| EXCHANGE_RATES_GETTING_TIMER |                                    3600 |
-| FIXERIO_API_KEY              |                                         |
-| FIXERIO_BASE_CURRENCY        |                                     EUR |
-| FIXERIO_SECURE               |                                   false |
-| FIXERIO_SYMBOLS              | USD,EUR,JPY,GBP,AUD,CAD,CHF,CNY,NZD,RUB |
-| MONGO_DB_URI                 |               mongodb://localhost:27017 |
-| MONGO_DB_DATABASE            |                 my-savings-telegram-bot |
-| RATES_PROVIDER               |                                 fixerio |
-| TELEGRAM_API_TOKEN           |                                         |
-| TELEGRAM_API_UPDATES_TIMEOUT |                                      60 |
+```bash
+# Defaults
+
+DEBUG=false
+DEBUG_TELEGRAM_API="false"
+
+
+MONGO_DB_URI="mongodb://localhost:27017"
+MONGO_DB_DATABASE="my-savings-telegram-bot"
+
+RATES_PROVIDER="fixerio"
+RATES_PROVIDER_OPTIONS="{\"FixerIOAPIKey\": \"\", \"FixerIOBaseCurrency\": \"EUR\", \"FixerIOSecure\": false, \"FixerIOSymbols\": [\"USD\",\"EUR\",\"JPY\",\"GBP\",\"AUD\",\"CAD\",\"CHF\",\"CNY\",\"NZD\",\"RUB\"]}"
+RATES_RPOVIDER_UPDATE_PERIOD=3600
+
+TELEGRAM_API_TOKEN=
+TELEGRAM_API_UPDATES_TIMEOUT=60
+```
