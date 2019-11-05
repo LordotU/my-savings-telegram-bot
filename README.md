@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/badge/License-Unlicense-000000.svg)](https://unlicense.org/)
 
 <p align="center">
-    <img width="256" height="256" src="./assets/peppa.png">
+    <img width="256" height="256" src="https://github.com/LordotU/my-savings-telegram-bot/raw/master/assets/peppa.png">
 </p>
 
 ## Description
@@ -20,8 +20,8 @@ You may run your own copy of this bot with Docker:
 docker pull lordotu/my-savings-telegram-bot
 
 docker run -dti \
-  -e FIXERIO_API_KEY=<https://fixer.io API Key> \
   -e TELEGRAM_API_TOKEN=<Telegram API Token> \
+  -e RATES_PROVIDER_OPTIONS="{\"FixerIOAPIKey\": \"<https://fixer.io API Key>\", \"FixerIOBaseCurrency\": \"EUR\", \"FixerIOSecure\": false, \"FixerIOSymbols\": [\"USD\",\"EUR\",\"JPY\",\"GBP\",\"AUD\",\"CAD\",\"CHF\",\"CNY\",\"NZD\",\"RUB\"]}" \
   --name my-savings-telegram-bot \
   lordotu/my-savings-telegram-bot
 ```
