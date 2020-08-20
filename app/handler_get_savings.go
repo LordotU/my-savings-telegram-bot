@@ -36,6 +36,7 @@ func (app *Application) botHandlerGetSavings(
 	}
 
 	savingsInterface := make([]interface{}, len(savings))
+	ratesInterface := make([]interface{}, len(savings))
 	totalInUserBaseCurrency := float64(0)
 	for i, saving := range savings {
 		savingsInterface[i] = (*saving)
@@ -44,10 +45,40 @@ func (app *Application) botHandlerGetSavings(
 			app.Logger.Error("Get total savings in user base currency error", zap.Error(err))
 			return nil
 		}
+		ratesInterface[i] = struct {
+			Currency string
+			Rate     string
+		}{
+			Currency: saving.Currency,
+			Rate:     strconv.FormatFloat(userBaseCurrencyRate.Rate / rate.Rate, 'f', -1, 32),
+		}
 		totalInUserBaseCurrency += saving.Amount / rate.Rate * userBaseCurrencyRate.Rate
 	}
 
-	keyboard := botHelpers.GetInlineKeyboard(
+	msg, err := botHelpers.GetMsgFromMdTemplate(
+		"get_savings.md",
+		struct {
+			TotalInUserBaseCurrency string
+			UserBaseCurrency        string
+			Rates                   []interface{}
+		}{
+			strconv.FormatFloat(totalInUserBaseCurrency, 'f', -1, 32),
+			userBaseCurrencyRate.Currency,
+			ratesInterface,
+		},
+		u.Message.Chat.ID,
+	)
+	if err != nil {
+		app.Logger.Error(
+			"Cannot process template file",
+			zap.String("file", "templates/get_savings.md"),
+			zap.Error(err),
+		)
+		return nil
+	}
+
+	msgConfig := msg.(tgbotapi.MessageConfig)
+	msgConfig.ReplyMarkup = botHelpers.GetInlineKeyboard(
 		1,
 		savingsInterface,
 		func(item interface{}) string {
@@ -58,13 +89,5 @@ func (app *Application) botHandlerGetSavings(
 		},
 	)
 
-	msg := tgbotapi.NewMessage(
-		u.Message.Chat.ID,
-		"Your total savings is *"+strconv.FormatFloat(totalInUserBaseCurrency, 'f', -1, 32)+" "+
-			user.BaseCurrency+"*.\n\nClick to remove:",
-	)
-	msg.ReplyMarkup = keyboard
-	msg.ParseMode = tgbotapi.ModeMarkdown
-
-	return msg
+	return msgConfig
 }

@@ -1,4 +1,4 @@
-FROM golang:1.12.10-alpine as builder
+FROM golang:1.13.5-alpine as builder
 WORKDIR /app
 RUN apk update && apk add --no-cache git ca-certificates && update-ca-certificates
 COPY go.mod .
