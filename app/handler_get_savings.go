@@ -36,7 +36,7 @@ func (app *Application) botHandlerGetSavings(
 	}
 
 	savingsInterface := make([]interface{}, len(savings))
-	ratesInterface := make([]interface{}, len(savings))
+	savingsRates := make(map[string]string)
 	totalInUserBaseCurrency := float64(0)
 	for i, saving := range savings {
 		savingsInterface[i] = (*saving)
@@ -45,13 +45,7 @@ func (app *Application) botHandlerGetSavings(
 			app.Logger.Error("Get total savings in user base currency error", zap.Error(err))
 			return nil
 		}
-		ratesInterface[i] = struct {
-			Currency string
-			Rate     string
-		}{
-			Currency: saving.Currency,
-			Rate:     strconv.FormatFloat(userBaseCurrencyRate.Rate / rate.Rate, 'f', -1, 32),
-		}
+		savingsRates[saving.Currency] = strconv.FormatFloat(userBaseCurrencyRate.Rate/rate.Rate, 'f', -1, 32)
 		totalInUserBaseCurrency += saving.Amount / rate.Rate * userBaseCurrencyRate.Rate
 	}
 
@@ -60,11 +54,11 @@ func (app *Application) botHandlerGetSavings(
 		struct {
 			TotalInUserBaseCurrency string
 			UserBaseCurrency        string
-			Rates                   []interface{}
+			SavingsRates            map[string]string
 		}{
 			strconv.FormatFloat(totalInUserBaseCurrency, 'f', -1, 32),
 			userBaseCurrencyRate.Currency,
-			ratesInterface,
+			savingsRates,
 		},
 		u.Message.Chat.ID,
 	)
